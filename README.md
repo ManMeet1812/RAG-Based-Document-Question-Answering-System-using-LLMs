@@ -1,28 +1,30 @@
-# RAG-Based Document Question Answering System
-
-A Retrieval-Augmented Generation (RAG) based document question-answering system that allows users to upload PDF documents, extract and process document text, store semantic embeddings in a vector database, and ask natural language questions. The system retrieves the most relevant document chunks and generates accurate, context-aware answers using a Large Language Model.
-
----
+# RAG-Based Document Question Answering System with FAISS, OpenAI, and Docker
 
 ## Project Overview
 
-This project is designed to solve the problem of searching and understanding long documents efficiently. Instead of manually reading large PDF files, users can upload documents and ask questions directly. The system uses a RAG pipeline to retrieve relevant information from the document and generate answers grounded in the uploaded content.
+This project is a Retrieval-Augmented Generation (RAG)-based Document Question Answering system that allows users to upload a PDF document, ask questions about the document, retrieve relevant source chunks, and generate grounded answers using an LLM.
 
-The project demonstrates practical skills in natural language processing, vector databases, semantic search, document processing, and LLM-based application development.
+The system extracts text from uploaded PDFs, splits the text into chunks, generates embeddings using SentenceTransformers, stores and searches those embeddings using FAISS, and sends the retrieved context to OpenAI to generate an answer with page-level source references.
+
+This project demonstrates an end-to-end AI application pipeline combining document processing, semantic search, retrieval augmentation, LLM-based answer generation, and Docker-based deployment.
 
 ---
 
 ## Features
 
-- Upload PDF documents
-- Extract text from uploaded PDFs
-- Split long documents into manageable text chunks
-- Generate embeddings for document chunks
-- Store embeddings in a vector database
-- Retrieve relevant chunks based on user questions
-- Generate answers using an LLM
-- Display source chunks used for answer generation
-- Simple and interactive Streamlit user interface
+- Upload PDF documents through a Streamlit interface
+- Extract text page-by-page using PyMuPDF
+- Split extracted text into overlapping chunks
+- Generate semantic embeddings using SentenceTransformers
+- Store and search embeddings using FAISS vector search
+- Retrieve top relevant document chunks for user questions
+- Improve retrieval using:
+  - FAISS semantic search
+  - keyword scoring
+  - section-aware helper for questions like “What is the executive summary?”
+- Generate grounded answers using OpenAI API
+- Display source file name and page number for retrieved chunks
+- Containerized with Docker for reproducible setup
 
 ---
 
@@ -30,42 +32,40 @@ The project demonstrates practical skills in natural language processing, vector
 
 | Component | Technology |
 |---|---|
-| Programming Language | Python |
-| User Interface | Streamlit |
+| Frontend | Streamlit |
 | PDF Processing | PyMuPDF |
-| Text Chunking | LangChain |
-| Embeddings | OpenAI Embeddings |
-| Vector Database | ChromaDB |
-| LLM | OpenAI GPT Model |
+| Embeddings | SentenceTransformers |
+| Vector Search | FAISS |
+| LLM | OpenAI API |
 | Environment Variables | python-dotenv |
+| Containerization | Docker |
+| Programming Language | Python |
 
 ---
 
-## System Architecture
+## RAG Pipeline
+
+The system follows this pipeline:
 
 ```text
-User Uploads PDF
-        |
-        v
-PDF Text Extraction
-        |
-        v
-Text Chunking
-        |
-        v
+PDF Upload
+    ↓
+Text Extraction
+    ↓
+Text Cleaning
+    ↓
+Chunking with Page Metadata
+    ↓
 Embedding Generation
-        |
-        v
-Vector Database Storage
-        |
-        v
-User Asks Question
-        |
-        v
-Relevant Chunk Retrieval
-        |
-        v
-LLM Answer Generation
-        |
-        v
-Answer + Source Chunks Displayed
+    ↓
+FAISS Vector Indexing
+    ↓
+Question Embedding
+    ↓
+Semantic Retrieval
+    ↓
+Hybrid Reranking
+    ↓
+OpenAI Answer Generation
+    ↓
+Answer with Source References
